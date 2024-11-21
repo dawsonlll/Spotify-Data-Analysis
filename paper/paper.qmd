@@ -1,8 +1,9 @@
 ---
-title: "Data Analysis of Spotify"
+title: "Tracking the Evolution of Sentiment: Analyzing Joji’s Music Sentiment from 2018 to 2022"
 author: "Dawson Li, Betty Liu"
-thanks: "Code and data are available at: https://github.com/betty-tGM2/Data_analysis_spotify.git"
-date: Oct 10, 2024
+thanks: "Code and data are available at: https://github.com/dawsonlll/Spotify-Data-Analysis.git"
+date: Nov 21, 2024
+abstract: "This analysis explores the evolution of emotional expression in Joji's music by analyzing the valence of tracks from his albums released between 2018 and 2022. Using data from Spotify, the analysis focused on changes in valence scores, which quantify the emotional positivity conveyed by his music. Preliminary findings suggest a trend toward more melancholic emotional expression over time. This study highlights how Joji's artistic direction has shifted, which may reflect broader trends in musical style and audience preferences."
 date-format: long
 format: pdf
 bibliography: references.bib
@@ -17,6 +18,12 @@ library(tidyverse)
 options(scipen=999)
 ```
 
+# Introduction
+This study examines the emotional trajectory of Joji's music over a five-year period (i.e., 2018 to 2022), using emotional valence as a measure of the emotional content of his songs. Affective valence ranges from 0.00 (representing highly melancholic) to 1.00 (representing highly positive) and provides insight into the emotions conveyed by the music. By analyzing the emotional valence scores across Joji's album releases, we aim to discover patterns in his musical expression and explore how his artistic style has evolved. This analysis not only highlights changes in the emotional tone of his music, but also reflects broader trends in his artistic development. In this way, we seek to understand the nuances of emotional change and consistency in Joji's discography over a specific period of time.
+
+# Data
+
+To prepare a dataset for analyzing Joji’s music, we downloaded data from Spotify using the @citespotifyr package, which facilitates access to a wealth of track details through the Spotify Web API. After obtaining the necessary authentication credentials, Joji’s artist ID was used to compile data for all of his albums released from 2018 to 2022. This included extracting specific track information such as album title, release date, and valence scores, which measure the emotional positivity of the music. The consolidated dataset contains track IDs, valence scores, and other relevant details in a structure that facilitates in-depth analysis of trends and changes in Joji’s musical expressions over the years.
 
 For this analysis we used the following packages: @citeR, @citetidyverse, @citehere, @citeusethis, @citespotifyr, and @ggplot2. The dataset is downloaded from:@jojiSpotify. The code were used from @alexander2023telling. 
 
@@ -28,7 +35,9 @@ For this analysis we used the following packages: @citeR, @citetidyverse, @citeh
 joji  <- readRDS(here("data", "00-raw_data", "joji.rds"))
 ```
 
+# Result and Disscussion
 ```{r}
+#| label: fig-of-box
 #| warning: false
 #| message: false
 #| echo:    false
@@ -50,14 +59,18 @@ joji |>
     y = "Duration of song (ms)"
   )
 ```
-Boxplot showing the distribution of song durations in milliseconds for album release years 2018, 2020, and 2022. On the y-axis, song durations range from approximately 100,000 to over 500,000 milliseconds, with most songs between 100,000 and 300,000 milliseconds. Each year is represented by a boxplot summarizing the median, interquartile range (IQR), and outliers for that year. Around 2018, the median song duration was approximately 200,000 milliseconds, with one extreme outlier at over 500,000 milliseconds. The IQR shows that most songs fall within a narrow range. In 2020, the median is slightly lower, with less variation in song duration and no extreme outliers. By 2022, the median is similar to 2018, but the IQR is wider, indicating greater variation in song length, as well as some outliers for shorter songs.
+The @fig-of-box visually shows the distribution of Joji's song durations in milliseconds for albums released in 2018, 2020, and 2022. Song durations generally range from 100,000 to 500,000 milliseconds, with a large concentration between 100,000 and 300,000 milliseconds. Each year has its own box plot, highlighting the median, interquartile range (IQR), and presence of outliers.
 
-What’s particularly interesting about this graph is that the variation in song duration has increased over time, as shown by the widening IQR in 2022. Despite this, the median song duration has remained relatively consistent over the years. These patterns suggest that while there may be an overall trend in song duration consistency, individual deviations are becoming more pronounced, particularly around 2022.
+In 2018, song durations generally clustered around 200,000 milliseconds. This year's data is tightly grouped with a narrow IQR, indicating that most songs are close to the median duration. However, one extreme outlier is observed with a duration of over 500,000 milliseconds. In 2020, the median duration decreased slightly from 2018, with significantly less variation between song lengths and the absence of extreme outliers indicating more uniform song durations.
+
+By 2022, the median song length was very close to that of 2018, but the variation between song lengths increased significantly. This year’s wider IQR reflects a greater diversity in song lengths, including some significantly shorter songs labelled as outliers. This trend of increasing variation, combined with consistent median lengths over the years, suggests that while typical song lengths have remained stable, the range of song lengths that artists are exploring has expanded, especially in recent years. This may indicate that Joji are increasingly willing to experiment with shorter and longer musical forms.
+
 ```{r}
+#| label: fig-of-line
 #| warning: false
 #| message: false
 #| echo:    false
-#| fig-cap: "Valencevs Album Release Date"
+#| fig-cap: "Valence Variations Across Album Release Dates"
 rbind(joji) |>
   select(artist_name, album_release_date, valence) |>
   mutate(album_release_date = ymd(album_release_date)) |> 
@@ -74,8 +87,11 @@ rbind(joji) |>
   scale_color_brewer(palette = "Set1") +
   theme(legend.position = "bottom")
 ```
-The line graph shows the relationship between valence and album release date for the artist Joji from 2018 to 2022. The y-axis represents valence, ranging from 0.00 to 1.00, while the x-axis categorizes the data by album release year. Joji's music in 2018 had a wide range of valence scores, with most songs clustered between 0.00 and 0.30, indicating a melancholic tone, and relatively narrow confidence intervals indicating consistent emotional themes. By 2020, the average valence had risen slightly, although songs still mostly fell between 0.25 and 0.50, with increased variability. In 2022, the valence scores showed a slightly downward trend, indicating that Joji's music has become more melancholic over time, with wider confidence intervals, implying greater variability in emotional tone. What's particularly interesting about this graph is that the valence has gradually decreased from 2020 to 2022, reflecting a shift in musical style toward a more melancholic tone as Joji's albums progress.
-
+The @fig-of-line illustrates the relationship between the positive emotions (i.e., sentiment values) in Joji's music and the release dates of his albums from 2018 to 2022. Valence scales from 0.00 to 1.00, with higher values indicating more positive emotions in the music.
+In 2018, Joji's tracks show a wide range of valence scores, mainly between 0.00 and 0.30. This suggests that his music during this period generally conveys a melancholic or somber tone. The confidence intervals for these values are relatively small, suggesting that the songs released during the year had a consistent emotional theme.
+By 2020, the average emotional value of Joji's music changes significantly, with most songs having emotional values between 0.25 and 0.50. This slight increase implies a moderate increase in positive emotional content in his songs. However, the wider range and larger confidence interval in 2020 compared to 2018 suggests that the emotional tone of his music has become more variable.
+In 2022, the trend in emotion scores decreases slightly, returning to a more somber tone on average. This is also a year with greater variation in emotional expression and wider confidence intervals. the music released in 2022 not only has lower mood scores, but also has greater fluctuations in the emotional tone of each song.
+The gradual decline in emotion scores from 2020 to 2022 is particularly intriguing, reflecting a shift in Joji's musical style toward
 
 \newpage
 
