@@ -1,0 +1,91 @@
+---
+title: "Data Analysis of Spotify"
+author: "Dawson Li, Betty Liu"
+thanks: "Code and data are available at: https://github.com/betty-tGM2/Data_analysis_spotify.git"
+date: Oct 10, 2024
+date-format: long
+format: pdf
+bibliography: references.bib
+---
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+library(here)
+library(tidyverse)
+options(scipen=999)
+```
+
+
+For this analysis we used the following packages: @citeR, @citetidyverse, @citehere, @citeusethis, @citespotifyr, and @ggplot2. The dataset is downloaded from:@jojiSpotify. The code were used from @alexander2023telling. 
+
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+joji  <- readRDS(here("data", "00-raw_data", "joji.rds"))
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo:    false
+#| fig-cap: "Duration of the Song vs Album Release Date"
+joji <- as_tibble(joji)
+
+joji |>
+  mutate(album_release_date = ymd(album_release_date)) |>
+  ggplot(aes(
+    x = album_release_date,
+    y = duration_ms,
+    group = album_release_date
+  )) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.5, width = 0.3, height = 0) +
+  theme_minimal() +
+  labs(
+    x = "Album release date",
+    y = "Duration of song (ms)"
+  )
+```
+Boxplot showing the distribution of song durations in milliseconds for album release years 2018, 2020, and 2022. On the y-axis, song durations range from approximately 100,000 to over 500,000 milliseconds, with most songs between 100,000 and 300,000 milliseconds. Each year is represented by a boxplot summarizing the median, interquartile range (IQR), and outliers for that year. Around 2018, the median song duration was approximately 200,000 milliseconds, with one extreme outlier at over 500,000 milliseconds. The IQR shows that most songs fall within a narrow range. In 2020, the median is slightly lower, with less variation in song duration and no extreme outliers. By 2022, the median is similar to 2018, but the IQR is wider, indicating greater variation in song length, as well as some outliers for shorter songs.
+
+What’s particularly interesting about this graph is that the variation in song duration has increased over time, as shown by the widening IQR in 2022. Despite this, the median song duration has remained relatively consistent over the years. These patterns suggest that while there may be an overall trend in song duration consistency, individual deviations are becoming more pronounced, particularly around 2022.
+```{r}
+#| warning: false
+#| message: false
+#| echo:    false
+#| fig-cap: "Valencevs Album Release Date"
+rbind(joji) |>
+  select(artist_name, album_release_date, valence) |>
+  mutate(album_release_date = ymd(album_release_date)) |> 
+  ggplot(aes( x = album_release_date, y = valence, color = artist_name)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth() +
+  theme_minimal() +
+  facet_wrap(facets = vars(artist_name), dir = "v") +
+  labs(
+    x = "Album release date",
+    y = "Valence",
+    color = "Artist"
+  ) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom")
+```
+The line graph shows the relationship between valence and album release date for the artist Joji from 2018 to 2022. The y-axis represents valence, ranging from 0.00 to 1.00, while the x-axis categorizes the data by album release year. Joji's music in 2018 had a wide range of valence scores, with most songs clustered between 0.00 and 0.30, indicating a melancholic tone, and relatively narrow confidence intervals indicating consistent emotional themes. By 2020, the average valence had risen slightly, although songs still mostly fell between 0.25 and 0.50, with increased variability. In 2022, the valence scores showed a slightly downward trend, indicating that Joji's music has become more melancholic over time, with wider confidence intervals, implying greater variability in emotional tone. What's particularly interesting about this graph is that the valence has gradually decreased from 2020 to 2022, reflecting a shift in musical style toward a more melancholic tone as Joji's albums progress.
+
+
+\newpage
+
+\appendix
+
+# Appendix {-}
+Data were downloaded from Spotify, and method were used from @alexander2023telling.
+
+
+\newpage
+# References
+
+
