@@ -1,10 +1,10 @@
 #### Preamble ####
-# Purpose: 
-# Author: 
-# Date: 
-# Contact: 
+# Purpose: Download data from Spotify web
+# Author: Betty Liu
+# Date: Nov 21, 2024
+# Contact: N/A
 # License: MIT
-# Pre-requisites: 
+# Pre-requisites: N/A
 
 #### Workspace setup ###
 #install.packages("devtools")
